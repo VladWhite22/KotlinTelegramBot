@@ -11,6 +11,7 @@ fun main() {
                     "2 – Статистика\n" +
                     "0 – Выход"
         )
+KTB-06-Implement-statistics-functionality
 
         val userChoice = readln().toInt()
 
@@ -25,6 +26,14 @@ fun main() {
             }
 
             (userChoice == 0) -> break
+
+
+        when (val userChoice = readln().toInt()) {
+
+            1 -> println("Вы выбрали: Учить слова")
+            2 -> println("Вы выбрали: Статистика")
+            0 -> break
+ master
             else -> println("Введите число 1, 2 или 0")
         }
     }

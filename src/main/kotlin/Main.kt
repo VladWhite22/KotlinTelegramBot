@@ -12,11 +12,11 @@ fun main() {
                     "0 – Выход"
         )
 
-        val userChoice = readln().toInt()
 
-        when (true) {
-            (userChoice == 1) -> println("Вы выбрали: Учить слова")
-            (userChoice == 2) -> {
+
+        when (val userChoice = readln().toInt()) {
+            1 -> println("Вы выбрали: Учить слова")
+            2 -> {
                 println("Вы выбрали: Статистика")
                 val learnedCount = dictionary.filter { it.correctAnswersCount >= 3 }.size
                 val totalCount = dictionary.size
@@ -24,7 +24,7 @@ fun main() {
                 println("Выучено $learnedCount из $totalCount слов | $percent%" + "\n")
             }
 
-            (userChoice == 0) -> break
+            0 -> break
             else -> println("Введите число 1, 2 или 0")
         }
     }

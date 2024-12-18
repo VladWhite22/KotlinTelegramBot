@@ -21,16 +21,14 @@ fun main() {
                     continue
                 }
 
-                val questionWords = notLearnedList.shuffled().take(4)
+                val questionWords = notLearnedList.shuffled().take(NUMBER_OF_OPTIONS)
                 val correctAnswer = questionWords.random()
                 println(
-                    "\n ${correctAnswer.original}:\n" +
-                            " 1 - ${questionWords[0].translete}\n" +
-                            " 2 - ${questionWords[1].translete}\n" +
-                            " 3 - ${questionWords[2].translete}\n" +
-                            " 4 - ${questionWords[3].translete}"
+                    questionWords.mapIndexed{index, p-> "${index+1}-${p.translete}"}.
+                    joinToString(separator = "\n", prefix = "${correctAnswer.original}:\n", postfix = "\n----------\n0 - Меню")
                 )
-                val userAnsver = readln().toInt()
+                val userAnswerInput = readln().toInt()
+
             }
 
             2 -> {
@@ -56,6 +54,5 @@ fun loadDictionary(): List<Word> {
             Word(original = line[0], translete = line[1], correctAnswersCount = line.getOrNull(2)?.toIntOrNull() ?: 0)
         dictionary.add(word)
     }
-
     return dictionary
 }

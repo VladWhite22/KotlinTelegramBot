@@ -12,13 +12,30 @@ fun main() {
                     "0 – Выход"
         )
 
-
-
         when (val userChoice = readln().toInt()) {
-            1 -> println("Вы выбрали: Учить слова")
+            1 -> {
+                println("Вы выбрали: Учить слова")
+                val notLearnedList = dictionary.filter { it.correctAnswersCount < PASSING_CORRECT_ANSWERS }
+                if (notLearnedList.size == 0) {
+                    println("\nВсе слова в словаре выучены\n")
+                    continue
+                }
+
+                val questionWords = notLearnedList.shuffled().take(4)
+                val correctAnswer = questionWords.random()
+                println(
+                    "\n ${correctAnswer.original}:\n" +
+                            " 1 - ${questionWords[0].translete}\n" +
+                            " 2 - ${questionWords[1].translete}\n" +
+                            " 3 - ${questionWords[2].translete}\n" +
+                            " 4 - ${questionWords[3].translete}"
+                )
+                val userAnsver = readln().toInt()
+            }
+
             2 -> {
                 println("Вы выбрали: Статистика")
-                val learnedCount = dictionary.filter { it.correctAnswersCount >= 3 }.size
+                val learnedCount = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWERS }.size
                 val totalCount = dictionary.size
                 val percent = (learnedCount.toFloat() / totalCount.toFloat() * 100).toInt()
                 println("Выучено $learnedCount из $totalCount слов | $percent%" + "\n")

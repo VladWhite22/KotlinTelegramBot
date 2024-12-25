@@ -11,29 +11,36 @@ fun main() {
                     "2 – Статистика\n" +
                     "0 – Выход"
         )
-KTB-06-Implement-statistics-functionality
 
-        val userChoice = readln().toInt()
+        when (val userChoice = readln().toInt()) {
+            1 -> {
+                println("Вы выбрали: Учить слова")
+                val notLearnedList = dictionary.filter { it.correctAnswersCount < PASSING_CORRECT_ANSWERS }
+                if (notLearnedList.size == 0) {
+                    println("\nВсе слова в словаре выучены\n")
+                    continue
+                }
 
-        when (true) {
-            (userChoice == 1) -> println("Вы выбрали: Учить слова")
-            (userChoice == 2) -> {
+                val questionWords = notLearnedList.shuffled().take(NUMBER_OF_OPTIONS)
+                val correctAnswer = questionWords.random()
+                println(
+                    questionWords.mapIndexed{index, p-> "${index+1}-${p.translete}"}.
+                    joinToString(separator = "\n", prefix = "${correctAnswer.original}:\n", postfix = "\n----------\n0 - Меню")
+                )
+                val userAnswerInput = readln().toInt()
+
+            }
+
+            2 -> {
                 println("Вы выбрали: Статистика")
-                val learnedCount = dictionary.filter { it.correctAnswersCount >= 3 }.size
+                val learnedCount = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWERS }.size
                 val totalCount = dictionary.size
                 val percent = (learnedCount.toFloat() / totalCount.toFloat() * 100).toInt()
                 println("Выучено $learnedCount из $totalCount слов | $percent%" + "\n")
             }
 
-            (userChoice == 0) -> break
 
-
-        when (val userChoice = readln().toInt()) {
-
-            1 -> println("Вы выбрали: Учить слова")
-            2 -> println("Вы выбрали: Статистика")
             0 -> break
- master
             else -> println("Введите число 1, 2 или 0")
         }
     }
@@ -48,6 +55,5 @@ fun loadDictionary(): List<Word> {
             Word(original = line[0], translete = line[1], correctAnswersCount = line.getOrNull(2)?.toIntOrNull() ?: 0)
         dictionary.add(word)
     }
-
     return dictionary
 }

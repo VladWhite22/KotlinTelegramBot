@@ -25,15 +25,19 @@ fun main() {
                 val correctAnswer = questionWords.random()
                 val correctAnswerId = questionWords.indexOf(correctAnswer)
                 println(
-                    questionWords.mapIndexed{index, p-> "${index+1}-${p.translete}"}.
-                    joinToString(separator = "\n", prefix = "${correctAnswer.original}:\n", postfix = "\n----------\n0 - Меню")
+                    questionWords.mapIndexed { index, p -> "${index + 1}-${p.translete}" }.joinToString(
+                        separator = "\n",
+                        prefix = "${correctAnswer.original}:\n",
+                        postfix = "\n----------\n0 - Меню"
+                    )
                 )
                 val userAnswerInput = readln().toInt()
                 if (userAnswerInput == 0) continue
-                else if (userAnswerInput == correctAnswerId){
+                else if (userAnswerInput == correctAnswerId + 1) {
+                    println("Правильно!")
                     correctAnswer.correctAnswersCount += 1
                     saveDictionary(dictionary)
-                }
+                } else if (userAnswerInput != correctAnswerId + 1) println("Неправильно!  ${correctAnswer.original}- это ${correctAnswer.translete}")
 
             }
 
@@ -63,9 +67,7 @@ fun loadDictionary(): List<Word> {
     return dictionary
 }
 
-fun saveDictionary( dictionary: List<Word>){
-
-File("words.txt").writeText("")
-    File("words.txt").writeText(dictionary.toString())
-
+fun saveDictionary(dictionary: List<Word>) {
+    File("words.txt").delete()
+    File("words.txt").writeText(dictionary.map { "${it.original}|${it.translete}|${it.correctAnswersCount}\n" }.toString())
 }

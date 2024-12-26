@@ -35,7 +35,7 @@ fun main() {
                 if (userAnswerInput == 0) continue
                 else if (userAnswerInput == correctAnswerId + 1) {
                     println("Правильно!")
-                    correctAnswer.correctAnswersCount += 1
+                    correctAnswer.correctAnswersCount ++
                     saveDictionary(dictionary)
                 } else if (userAnswerInput != correctAnswerId + 1) println("Неправильно!  ${correctAnswer.original}- это ${correctAnswer.translete}")
 
@@ -68,6 +68,6 @@ fun loadDictionary(): List<Word> {
 }
 
 fun saveDictionary(dictionary: List<Word>) {
-    File("words.txt").delete()
-    File("words.txt").writeText(dictionary.map { "${it.original}|${it.translete}|${it.correctAnswersCount}\n" }.toString())
+    File(WORDS).writeText("")
+    File(WORDS).writeText(dictionary.map { "${it.original}|${it.translete}|${it.correctAnswersCount}\n" }.toString())
 }

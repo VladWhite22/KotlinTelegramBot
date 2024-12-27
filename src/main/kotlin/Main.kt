@@ -68,6 +68,8 @@ fun loadDictionary(): List<Word> {
 }
 
 fun saveDictionary(dictionary: List<Word>) {
-    File(WORDS).writeText("")
-    File(WORDS).writeText(dictionary.map { "${it.original}|${it.translete}|${it.correctAnswersCount}\n" }.toString())
+    val wordsFile = File("words.txt")
+    wordsFile.writeText("")
+    for (word in dictionary)
+    wordsFile.appendText("${word.original}|${word.translete}|${word.correctAnswersCount}\n")
 }

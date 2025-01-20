@@ -46,7 +46,7 @@ fun main() {
 
                         if (userAnswerInput == 0) break
                         else if (correctAnswerId != null) {
-                            if (trainer.checkAnsver(userAnswerInput.minus(1))) {
+                            if (trainer.checkAnswer(userAnswerInput.minus(1))) {
                                 println("Правильно!")
 
                             } else println("Неправильно!  ${question.correctAnswer.original}- это ${question.correctAnswer.translete}")

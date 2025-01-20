@@ -52,7 +52,7 @@ class LearnWordsTrainer {
         return question
     }
 
-    fun checkAnsver(userAnswerIndex: Int?): Boolean {
+    fun checkAnswer(userAnswerIndex: Int): Boolean {
         return question?.let {
             val correctAnswerId = it.variants.indexOf(it.correctAnswer)
 

@@ -2,6 +2,12 @@ package org.example
 
 import java.io.File
 
+data class Word(
+    val original: String,
+    val translete: String,
+    var correctAnswersCount: Int = 0,
+)
+
 data class Statistics(
     val learnedCount: Int,
     val totalCount: Int,
@@ -24,13 +30,21 @@ class LearnWordsTrainer {
         return Statistics(learnedCount, totalCount, percent)
     }
 
-    fun getNextQuestin(): Question? {
+    fun getNextQuestion(): Question? {
         val notLearnedList = dictionary.filter { it.correctAnswersCount < PASSING_CORRECT_ANSWERS }
 
         if (notLearnedList.isEmpty()) return null
 
-        val questionWords = notLearnedList.shuffled().take(NUMBER_OF_OPTIONS)
+        val questionWords = if (notLearnedList.size < NUMBER_OF_OPTIONS) {
+            val lernedList = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWERS }.shuffled()
+            notLearnedList.shuffled().take(NUMBER_OF_OPTIONS) +
+                    lernedList.take(NUMBER_OF_OPTIONS - notLearnedList.size)
+        } else {
+            notLearnedList.shuffled().take(NUMBER_OF_OPTIONS)
+        }.shuffled()
+
         val correctAnswer = questionWords.random()
+
         question = Question(
             variants = questionWords,
             correctAnswer = correctAnswer
@@ -40,7 +54,7 @@ class LearnWordsTrainer {
 
     fun checkAnsver(userAnswerIndex: Int?): Boolean {
         return question?.let {
-            val correctAnswerId = it.variants?.indexOf(it.correctAnswer)
+            val correctAnswerId = it.variants.indexOf(it.correctAnswer)
 
             if (correctAnswerId == userAnswerIndex) {
                 it.correctAnswer.correctAnswersCount++

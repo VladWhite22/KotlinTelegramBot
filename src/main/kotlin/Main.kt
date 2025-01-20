@@ -10,7 +10,14 @@ fun Question.asConsoleString(): String {
 }
 
 fun main() {
-    val trainer = LearnWordsTrainer()
+
+    val trainer = try {
+        LearnWordsTrainer()
+    } catch (e: Exception) {
+        println("Невозможно загрузить словарь")
+        return
+    }
+
     while (true) {
         println(
             "Меню: \n" +
@@ -19,31 +26,33 @@ fun main() {
                     "0 – Выход"
         )
 
-        when (val userChoice = readln().toInt()) {
+        when (val userChoice = readln().toIntOrNull()) {
             1 -> {
-                println("Вы выбрали: Учить слова")
-                val unlernedDictionary =
-                    trainer.dictionary.filter { it.correctAnswersCount < PASSING_CORRECT_ANSWERS }.size
+                while (true) {
+                    try {
+                        println("Вы выбрали: Учить слова")
 
-                while (unlernedDictionary != 0) {
-                    if (unlernedDictionary == 0) {
-                        println("\nВсе слова в словаре выучены\n")
-                        continue
-                    }
+                        val question = trainer.getNextQuestion()
+                        val correctAnswerId = question?.variants?.indexOf(question.correctAnswer)
 
-                    val question = trainer.getNextQuestin()
-                    val correctAnswerId = question?.variants?.indexOf(question.correctAnswer)
+                        if (question == null) {
+                            println("\nВсе слова в словаре выучены\n")
+                            break
+                        }
+                        if (question != null) {
+                            println(question.asConsoleString())
+                        }
+                        val userAnswerInput = readln().toInt()
 
-                    if (question != null) {
-                        println(question.asConsoleString())
-                    }
-                    val userAnswerInput = readln().toInt()
-                    if (userAnswerInput == 0) break
-                    else if (correctAnswerId != null) {
-                        if (trainer.checkAnsver(userAnswerInput.minus(1))) {
-                            println("Правильно!")
+                        if (userAnswerInput == 0) break
+                        else if (correctAnswerId != null) {
+                            if (trainer.checkAnswer(userAnswerInput.minus(1))) {
+                                println("Правильно!")
 
-                        } else println("Неправильно!  ${question.correctAnswer.original}- это ${question.correctAnswer.translete}")
+                            } else println("Неправильно!  ${question.correctAnswer.original}- это ${question.correctAnswer.translete}")
+                        }
+                    } catch (e: Exception) {
+                        println("Необходимо ввести цифру!")
                     }
                 }
             }

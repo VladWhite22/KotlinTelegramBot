@@ -19,7 +19,7 @@ class TelegramBotService(private val botToken: String) {
         return response.body()
     }
 
-    fun sendMessage(botToken: String, chat_id: String, message:String) {
+    fun sendMessage(chat_id: String, message: String) {
         val encoded = URLEncoder.encode(
             message,
             StandardCharsets.UTF_8
@@ -34,7 +34,7 @@ class TelegramBotService(private val botToken: String) {
         client.send(request, HttpResponse.BodyHandlers.ofString())
     }
 
-    fun sendMenue(botToken: String, chat_id: String): String {
+    fun sendMenu(chat_id: String): String {
 
         val urlSendMessage = "$API_TELEGRAM$botToken/sendMessage"
         val sendMenuBody = """{
@@ -45,11 +45,11 @@ class TelegramBotService(private val botToken: String) {
             [
                 {
                     "text": "Изучить слова",
-                    "callback_data": "learn_words_clicked"
+                    "callback_data": $LEARN_WORDS_CLICKED
                 },
                 {
                     "text": "Статистика",
-                    "callback_data": "statistics_clicked"
+                    "callback_data": $STATISTICS_CLICKED
                 }
             ]
         ]

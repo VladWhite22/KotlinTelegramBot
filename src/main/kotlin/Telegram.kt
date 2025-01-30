@@ -36,8 +36,8 @@ fun main(args: Array<String>) {
 
         val data = dataRegex.find(updates)?.groups?.get(1)?.value
 
-        if (text.lowercase() =="/start" ) telegramService.sendMenue(botToken, chatId)
-        if (data =="statistics_clicked" ) telegramService.sendMessage(botToken, chatId,"Выучено 10 из 10 слов | 100%")
+        if (text.lowercase() == "/start") telegramService.sendMenu(chatId)
+        if (data == STATISTICS_CLICKED) telegramService.sendMessage(chatId, "Выучено 10 из 10 слов | 100%")
     }
 }
 

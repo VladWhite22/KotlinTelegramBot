@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
 
     val updateIdRegex = "\"update_id\":(.+?),".toRegex()
     val messageTextRegex: Regex = "\"text\":\"(.+?)\"".toRegex()
-    val chatIdRegex = "\"id\":(.+?),".toRegex()
+    val chatIdRegex = "\"chat\":\\{\"id\":(\\d+)".toRegex()
     val dataRegex: Regex = "\"data\":\"(.+?)\"".toRegex()
 
     val trainer = LearnWordsTrainer()
@@ -35,9 +35,14 @@ fun main(args: Array<String>) {
         println(chatId)
 
         val data = dataRegex.find(updates)?.groups?.get(1)?.value
+        println(data)
 
         if (text.lowercase() == "/start") telegramService.sendMenu(chatId)
-        if (data == STATISTICS_CLICKED) telegramService.sendMessage(chatId, "Выучено 10 из 10 слов | 100%")
+        if (data == STATISTICS_CLICKED) telegramService.sendMessage(
+            chatId,
+            "Выучено ${trainer.getStatistics().learnedCount} из ${trainer.getStatistics().totalCount} слов | " +
+                    "${trainer.getStatistics().percent}%" + "\n"
+        )
     }
 }
 

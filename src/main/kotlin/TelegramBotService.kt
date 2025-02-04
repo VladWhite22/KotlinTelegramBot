@@ -64,21 +64,21 @@ class TelegramBotService(private val botToken: String) {
         return response.body()
     }
 
-    fun sendQuestion(chat_id: String, question: Question):String {
+    fun sendQuestion(chatId: String, question: Question): String {
 
         val urlSendQuestion = "$API_TELEGRAM$botToken/sendMessage"
 
-        val questionVariants= question.variants.mapIndexed{ index, word ->
-                """
+        val questionVariants = question.variants.mapIndexed { index, word ->
+            """
             {
                 "text": "${word.translete}",
                 "callback_data": "$CALLBACK_DATA_ANSWER_PREFIX$index"
             }
         """.trimIndent()
-            }.joinToString(separator = ",")
+        }.joinToString(separator = ",")
 
         val sendQuestionBody = """{
-    "chat_id": $chat_id,
+    "chat_id": $chatId,
     "text": " ${question.correctAnswer.original}",
     "reply_markup": {
         "inline_keyboard": [[$questionVariants]]

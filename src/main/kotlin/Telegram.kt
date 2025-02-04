@@ -12,11 +12,6 @@ fun main(args: Array<String>) {
 
     val trainer = LearnWordsTrainer()
 
-    fun checkNextQuestionAndSend(trainer: LearnWordsTrainer, telegramService: TelegramBotService, chatId: String) {
-        val question = trainer.getNextQuestion()
-        if (question == null) telegramService.sendMessage(chatId, "Вы выучили все слова")
-        else telegramService.sendQuestion(chatId, question)
-    }
     while (true) {
         Thread.sleep(2000)
         val updates = telegramService.getUpdates(botToken, updateId.toString())
@@ -50,4 +45,9 @@ fun main(args: Array<String>) {
         )
         if (data == LEARN_WORDS_CLICKED) checkNextQuestionAndSend(trainer,telegramService,chatId)
     }
+}
+fun checkNextQuestionAndSend(trainer: LearnWordsTrainer, telegramService: TelegramBotService, chatId: String) {
+    val question = trainer.getNextQuestion()
+    if (question == null) telegramService.sendMessage(chatId, "Вы выучили все слова")
+    else telegramService.sendQuestion(chatId, question)
 }

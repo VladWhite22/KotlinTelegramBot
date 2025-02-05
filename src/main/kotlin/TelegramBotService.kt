@@ -81,7 +81,18 @@ class TelegramBotService(private val botToken: String) {
     "chat_id": $chatId,
     "text": " ${question.correctAnswer.original}",
     "reply_markup": {
-        "inline_keyboard": [[$questionVariants]]
+         "inline_keyboard" : [
+                        [
+                            $questionVariants
+                        ],
+                        [
+                            {
+                                "text": "Меню",
+                                "callback_data": "$EXIT" 
+                            }
+                        ]
+                    ]
+     
     }
 }""".trimIndent()
 

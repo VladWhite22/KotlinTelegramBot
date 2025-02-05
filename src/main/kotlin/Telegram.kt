@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
         println(text)
         val chatId = chatIdRegex.find(updates)?.groups?.get(1)?.value ?: continue
         println(chatId)
+
         val data = dataRegex.find(updates)?.groups?.get(1)?.value
         println(data)
 

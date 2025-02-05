@@ -29,13 +29,11 @@ class TelegramBotService(private val botToken: String) {
         if (message.length > 4096 || message.length < 1) return println("Недопустимое значение text")
 
         val urlSendMessage = "$API_TELEGRAM$botToken/sendMessage?chat_id=$chat_id&text=$encoded"
-
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlSendMessage)).build()
         client.send(request, HttpResponse.BodyHandlers.ofString())
     }
 
     fun sendMenu(chat_id: String): String {
-
         val urlSendMessage = "$API_TELEGRAM$botToken/sendMessage"
         val sendMenuBody = """{
     "chat_id": $chat_id,
@@ -59,15 +57,12 @@ class TelegramBotService(private val botToken: String) {
             .header("Content-type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(sendMenuBody))
             .build()
-
         val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
         return response.body()
     }
 
     fun sendQuestion(chatId: String, question: Question): String {
-
         val urlSendQuestion = "$API_TELEGRAM$botToken/sendMessage"
-
         val questionVariants = question.variants.mapIndexed { index, word ->
             """
             {
@@ -81,18 +76,13 @@ class TelegramBotService(private val botToken: String) {
     "chat_id": $chatId,
     "text": " ${question.correctAnswer.original}",
     "reply_markup": {
-         "inline_keyboard" : [
-                        [
-                            $questionVariants
-                        ],
-                        [
-                            {
-                                "text": "Меню",
-                                "callback_data": "$EXIT" 
-                            }
-                        ]
-                    ]
-     
+        "inline_keyboard": [
+        [$questionVariants],
+        [{
+        "text": "Меню",
+        "callback_data": "$EXIT"
+         }]
+    ]
     }
 }""".trimIndent()
 

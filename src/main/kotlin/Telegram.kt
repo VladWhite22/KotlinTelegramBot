@@ -38,7 +38,18 @@ fun main(args: Array<String>) {
                     "${statistics.percent}%" + "\n"
         )
         if (data == LEARN_WORDS_CLICKED) checkNextQuestionAndSend(trainer, telegramService, chatId)
-
+        if (data == EXIT) telegramService.sendMenu(chatId)
+        if (data?.startsWith(CALLBACK_DATA_ANSWER_PREFIX) == true) {
+            val userAnswerIndex = data.substringAfterLast(delimiter = CALLBACK_DATA_ANSWER_PREFIX).toInt()
+            if (userAnswerIndex != null) {
+                if (trainer.checkAnswer(userAnswerIndex)) telegramService.sendMessage(chatId, "Правильно!")
+                else telegramService.sendMessage(
+                    chatId,
+                    "Неправильно! ${trainer.question?.correctAnswer?.original} – это ${trainer.question?.correctAnswer?.translete} "
+                )
+                checkNextQuestionAndSend(trainer, telegramService, chatId)
+            }
+        }
     }
 }
 

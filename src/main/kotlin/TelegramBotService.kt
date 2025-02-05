@@ -72,19 +72,6 @@ class TelegramBotService(private val botToken: String) {
         """.trimIndent()
         }.joinToString(separator = ",")
 
-        val sendQuestionBody = """{
-    "chat_id": $chatId,
-    "text": " ${question.correctAnswer.original}",
-    "reply_markup": {
-        "inline_keyboard": [
-        [$questionVariants],
-        [{
-        "text": "Меню",
-        "callback_data": "$EXIT"
-         }]
-    ]
-    }
-}""".trimIndent()
 
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlSendQuestion))
             .header("Content-type", "application/json")

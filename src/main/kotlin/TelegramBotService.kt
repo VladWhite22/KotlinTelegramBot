@@ -12,8 +12,10 @@ class TelegramBotService(private val botToken: String) {
 
     fun getUpdates(botToken: String, updateId: String?): String {
         val urlGetUpdates = "$API_TELEGRAM$botToken/getUpdates?offset=$updateId"
+
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlGetUpdates)).build()
         val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
+
         return response.body()
     }
 
@@ -69,7 +71,6 @@ class TelegramBotService(private val botToken: String) {
             }
         """.trimIndent()
         }.joinToString(separator = ",")
-
         val sendQuestionBody = """{
     "chat_id": $chatId,
     "text": " ${question.correctAnswer.original}",
@@ -83,7 +84,6 @@ class TelegramBotService(private val botToken: String) {
     ]
     }
 }""".trimIndent()
-
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlSendQuestion))
             .header("Content-type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(sendQuestionBody))

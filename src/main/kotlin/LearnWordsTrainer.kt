@@ -25,23 +25,23 @@ class LearnWordsTrainer {
     val dictionary = loadDictionary()
 
     fun getStatistics(): Statistics {
-        val learnedCount = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWERS }.size
+        val learnedCount = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWER }.size
         val totalCount = dictionary.size
         val percent = (learnedCount.toFloat() / totalCount.toFloat() * 100).toInt()
         return Statistics(learnedCount, totalCount, percent)
     }
 
     fun getNextQuestion(): Question? {
-        val notLearnedList = dictionary.filter { it.correctAnswersCount < PASSING_CORRECT_ANSWERS }
+        val notLearnedList = dictionary.filter { it.correctAnswersCount < PASSING_CORRECT_ANSWER }
 
         if (notLearnedList.isEmpty()) return null
 
-        val questionWords = if (notLearnedList.size < NUMBER_OF_OPTIONS) {
-            val lernedList = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWERS }.shuffled()
-            notLearnedList.shuffled().take(NUMBER_OF_OPTIONS) +
-                    lernedList.take(NUMBER_OF_OPTIONS - notLearnedList.size)
+        val questionWords = if (notLearnedList.size < NUMBER_OF_OPTION) {
+            val lernedList = dictionary.filter { it.correctAnswersCount >= PASSING_CORRECT_ANSWER }.shuffled()
+            notLearnedList.shuffled().take(NUMBER_OF_OPTION) +
+                    lernedList.take(NUMBER_OF_OPTION - notLearnedList.size)
         } else {
-            notLearnedList.shuffled().take(NUMBER_OF_OPTIONS)
+            notLearnedList.shuffled().take(NUMBER_OF_OPTION)
         }.shuffled()
 
         val correctAnswer = questionWords.random()

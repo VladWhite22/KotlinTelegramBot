@@ -2,7 +2,6 @@ package org.example
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class Update(
@@ -67,63 +66,55 @@ data class InlineKeyboard(
 )
 
 fun main(args: Array<String>) {
+
     val botToken = args[0]
     var lastUpdateId = 0L
     val telegramService = TelegramBotService(botToken)
     val trainer = LearnWordsTrainer()
     val statistics = trainer.getStatistics()
-    val json = Json {
-        ignoreUnknownKeys = true
-    }
 
     while (true) {
         Thread.sleep(2000)
-        val responseString = telegramService.getUpdates(botToken, lastUpdateId)
-        println(responseString)
-
-        val response: Response = json.decodeFromString(responseString)
+        val response: Response = telegramService.getUpdates(botToken, lastUpdateId)
         val updates = response.result
-        val ferstUpdate = updates.firstOrNull() ?: continue
-        val updateId = ferstUpdate.updateId
+        val firstUpdate = updates.firstOrNull() ?: continue
+        val updateId = firstUpdate.updateId
         lastUpdateId = updateId + 1
 
-        val message = ferstUpdate.message?.text
+        val message = firstUpdate.message?.text
         println(message)
-        val chatId = ferstUpdate.message?.chat?.id ?: ferstUpdate.callbackQuery?.message?.chat?.id
+        val chatId = firstUpdate.message?.chat?.id ?: firstUpdate.callbackQuery?.message?.chat?.id ?: continue
         println(chatId)
-        val data = ferstUpdate.callbackQuery?.data
+        val data = firstUpdate.callbackQuery?.data
         println(data)
 
-        if (message?.lowercase() == "/start") telegramService.sendMenu(json, botToken, chatId)
-        if (data == STATISTICS_CLICKED) telegramService.sendMessage(
-            json,
-            chatId,
-            "Выучено ${statistics.learnedCount} из ${statistics.totalCount} слов | " +
-                    "${statistics.percent}%" + "\n"
-        )
-        if (data == LEARN_WORDS_CLICKED) checkNextQuestionAndSend(json, trainer, telegramService, chatId)
-        if (data == EXIT) telegramService.sendMenu(json, botToken, chatId)
-        if (data?.startsWith(CALLBACK_DATA_ANSWER_PREFIX) == true) {
-            val userAnswerIndex = data.substringAfterLast(delimiter = CALLBACK_DATA_ANSWER_PREFIX).toInt()
+        if (message?.lowercase() == "/start") telegramService.sendMenu(botToken, chatId)
+        when (data) {
+            STATISTIC_CLICKED -> telegramService.sendMessage(
+                chatId,
+                "Выучено ${statistics.learnedCount} из ${statistics.totalCount} слов | " +
+                        "${statistics.percent}%" + "\n"
+            )
+            WORDS_CLICKED -> checkNextQuestionAndSend(trainer, telegramService, chatId)
+            EXIT_MENU -> telegramService.sendMenu(botToken, chatId)
+        }
+        if (data?.startsWith(DATA_ANSWER_PREFIX) == true) {
+            val userAnswerIndex = data.substringAfterLast(delimiter = DATA_ANSWER_PREFIX).toInt()
             if (userAnswerIndex != null) {
-                if (trainer.checkAnswer(userAnswerIndex)) telegramService.sendMessage(json, chatId, "Правильно!")
+                if (trainer.checkAnswer(userAnswerIndex)) telegramService.sendMessage(chatId, "Правильно!")
                 else telegramService.sendMessage(
-                    json,
+
                     chatId,
                     "Неправильно! ${trainer.question?.correctAnswer?.original} – это ${trainer.question?.correctAnswer?.translete} "
                 )
-                checkNextQuestionAndSend(json, trainer, telegramService, chatId)
+                checkNextQuestionAndSend(trainer, telegramService, chatId)
             }
         }
     }
 }
 
-fun checkNextQuestionAndSend(
-    json: Json,
-    trainer: LearnWordsTrainer,
-    telegramService: TelegramBotService,
-    chatId: Long?) {
+fun checkNextQuestionAndSend(trainer: LearnWordsTrainer, telegramService: TelegramBotService, chatId: Long) {
     val question = trainer.getNextQuestion()
-    if (question == null) telegramService.sendMessage(json, chatId, "Вы выучили все слова")
-    else telegramService.sendQuestion(json, chatId, question)
+    if (question == null) telegramService.sendMessage( chatId, "Вы выучили все слова")
+    else telegramService.sendQuestion( chatId, question)
 }

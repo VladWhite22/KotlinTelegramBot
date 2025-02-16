@@ -19,6 +19,7 @@ class TelegramBotService(private val botToken: String) {
         val urlGetUpdates = "$API_TELEG$botToken/getUpdates?offset=$updateId"
         val request: HttpRequest = HttpRequest.newBuilder().uri(URI.create(urlGetUpdates)).build()
         val response: HttpResponse<String> = client.send(request, HttpResponse.BodyHandlers.ofString())
+        println(response.body())
         return json.decodeFromString(response.body())
     }
 
@@ -53,6 +54,7 @@ class TelegramBotService(private val botToken: String) {
                     listOf(
                         InlineKeyboard(text = "Изучить слова", callbackData = WORDS_CLICKED),
                         InlineKeyboard(text = "Статистика", callbackData = STATISTIC_CLICKED),
+                        InlineKeyboard(text = "Обнуление", callbackData = RESET_PROGRES),
                     )
                 )
             )
